@@ -62,18 +62,18 @@ war:        isEdited[my_id] = 0;
         atomic {                  // make sure the v here  
           isEdited[my_id] = 0;
           int i = 0;
-          for(i : 0 .. B) {
+          for(i : 0 .. B-1) {
               helper[i] = c[i];
           }
         }
         int i = 0;
-        for(i : 0 .. B) {
+        for(i : 0 .. B-1) {
             local_copy_decoy[i] = c[i];
         }
 
         if 
         :: isEdited[my_id] == 0 ->    // if no writing occured during the above 3 lines, we good
-            for(i : 0 .. B) {
+            for(i : 0 .. B-1) {
                local_copy[i] = local_copy_decoy[i];
             }
 csr:            printf("Reader %d updated\n", my_id);
@@ -87,7 +87,7 @@ csr:            printf("Reader %d updated\n", my_id);
      od 
      // is the same as local_copy here
      atomic {
-       for (i : 0 .. B) { 
+       for (i : 0 .. B-1) { 
           assert(local_copy[i] == helper[i])
        }
      }
