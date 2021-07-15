@@ -73,8 +73,6 @@ public class Counter
             int r = 0;
             while(r < this.rounds || (NUM_ROUNDS == 0)){ 
                 while(isEdited[this.id] == true) { // repeat until a complete value of counter is obtained
-                    //如果writer一口气过完一次loop，value++，但还是ok的？ ok
-                    // 但是如果modify左，没set bit，reader还是会以为no writing occurred. 
                     isEdited[this.id] = false; // writer interleave possible between this line and 1 above? 
                     for (int i = 0; i < NUM_BYTES; i++){ 
                         this.local_c_decoy[i] = c[i];
@@ -134,7 +132,8 @@ public class Counter
                     // }
 
                     if((c[index].byteValue() & 0xff) == 0xff){ // ignore 2's complement
-                        c[index--] = 0x0; // 五行下的index--作用一样
+                        c[index] = 0x0;
+                        index--;
                         carry = true; 
                     }
                     else{
