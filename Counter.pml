@@ -1,6 +1,3 @@
-#define MutexDontCare
-#include "critical2.h"
-
 #define R 3
 #define B 2
 
