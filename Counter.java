@@ -10,7 +10,6 @@ public class Counter
     
     static Byte[] c;
     static Boolean[] isEdited;
-    static Byte Global_version = 0;
 
     public static void main(String[] args) {
         
@@ -19,12 +18,10 @@ public class Counter
             NUM_BYTES   = Integer.parseInt(args[1]);
             NUM_ROUNDS  = Integer.parseInt(args[2]);
         } catch (Exception e) {
-            System.out.println("Usage: java RWApp [NUM_READERS] [NUM_BYTES] [NUM_ROUNDS]");
+            System.out.println("Usage: java Counter [NUM_READERS] [NUM_BYTES] [NUM_ROUNDS]");
             System.exit(255);
         }
-        
-        System.out.println(""+Runtime.getRuntime().availableProcessors());
-                   
+                    
         c = new Byte[NUM_BYTES];
         isEdited = new Boolean[NUM_READERS];
 
@@ -53,7 +50,6 @@ public class Counter
         private int rounds;
         private Byte[] local_c;
         private Byte[] local_c_decoy;  // inspired by latest rick and morty season 5 episode 2 "decoy family"
-        private int version;
         
         public Reader(int id, int rounds){
             this.id = id;
@@ -77,28 +73,22 @@ public class Counter
                     for (int i = 0; i < NUM_BYTES; i++){ 
                         this.local_c_decoy[i] = c[i];
                     }
-                    if(isEdited[this.id] == false){   // no writing occured during the above 3 lines
+                    if(isEdited[this.id] == false){   // if no writing occured during the above 3 lines, we good
                         for (int i = 0; i < NUM_BYTES; i++){
                             this.local_c[i] = this.local_c_decoy[i];
                         }   
 
                         System.out.println("Reader " + this.id + ": updated");
                     }
-                    else { // someone attacked our decoy 
+                    else { // reading of the counter was inturrupted by a new write event, need to re-read the counter.
                         System.out.println("#" + this.id + " decoy attacked!!!");
                     }
-
-                    //System.out.println("Reader " + this.id + ": " + Arrays.toString(this.local_c));
-                    //System.out.println("Reader " + this.id + ": " + byteToLong(this.local_c, NUM_BYTES));
                 }
 
-                // 
+                // for us to see
                 System.out.println("Reader " + this.id + ": " + byteToLong(this.local_c, NUM_BYTES));
-                // else {
-                //     System.out.println("Reader " + this.id + ": " + byteToLong(this.local_c, NUM_BYTES));
-                // }
 
-                try { Thread.sleep(ThreadLocalRandom.current().nextInt(10, 100)); } catch(InterruptedException e) {}
+                // try { Thread.sleep(ThreadLocalRandom.current().nextInt(10, 100)); } catch(InterruptedException e) {}
                 r++;
             }
         }
@@ -116,20 +106,10 @@ public class Counter
         public void run() {
             int r = 0;
             while(r < this.rounds || (NUM_ROUNDS == 0)){       
-                // c[c.length-1]++; // just for testing
-                // widening primitive promote to int for byte
-                // bitArray[i] = (byte) (bitArray[i] | bitMask[j]);
-                // Byte.byteValue();
-                
                 int index = c.length-1;
                 boolean carry = false;
 
                 do{ 
-                    // if(carry){
-                    //     index--;
-                    //     System.out.println("index: " + index + ", c[index] = " + c[index] + ", c[index+1] = " + c[index+1]); 
-                    //     carry = false;
-                    // }
 
                     if((c[index].byteValue() & 0xff) == 0xff){ // ignore 2's complement
                         c[index] = 0x0;
@@ -154,7 +134,7 @@ public class Counter
                 r++;
 
                 // resort to this for now
-                try { Thread.sleep(ThreadLocalRandom.current().nextInt(10, 100)); } catch(InterruptedException e) {}
+                // try { Thread.sleep(ThreadLocalRandom.current().nextInt(10, 100)); } catch(InterruptedException e) {}
             }
         }
     }
