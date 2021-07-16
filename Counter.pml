@@ -2,7 +2,6 @@
 #define B 2
 
 // for verification only
-byte helper[B] = 0;
 bit changed[R] = 0;
 
 // variables used in the algorithm
@@ -51,8 +50,11 @@ dow:  i = 0;
 
 active [R] proctype reader() {
   byte local_copy[B] = 0;
-  byte local_copy_decoy[B] = 0;  
+  byte local_copy_decoy[B] = 0; 
   int my_id;
+
+  // for verification only
+  byte helper[B] = 0;
 
   d_step {
       my_id = reader_id;
