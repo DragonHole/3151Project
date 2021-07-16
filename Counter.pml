@@ -18,11 +18,12 @@ active proctype writer() {
       int index = B-1;
       int carry = 0;
       
-dow:  
-      int i = 0;
-      for(i : 0 .. B-1) {
+      int i;
+dow:  i = 0;
+      for (i : 0 .. R-1) {
         isEdited[i] = 1;
       }
+
       if 
       :: c[index] == 255 -> 
           index--;
@@ -81,7 +82,7 @@ active [R] proctype reader() {
             for(i : 0 .. B-1) {
                local_copy[i] = local_copy_decoy[i];
             }
-rc:        printf("Reader %d updated\n", my_id); // short for "read complete"
+rc:         printf("Reader %d updated\n", my_id); // short for "read complete"
         :: else ->
             printf("Number %d decoy is attacked!!\n", my_id);
         fi 
@@ -101,4 +102,4 @@ rc:        printf("Reader %d updated\n", my_id); // short for "read complete"
 }
 
  // require that, under weak fairness, reads complete eventually even if writes subside.
-ltl eventual_entry { []((reader[1]@war) implies eventually (reader[1]@csr))}
+ltl eventual_entry { []((reader[1]@sr) implies eventually (reader[1]@rc))}
