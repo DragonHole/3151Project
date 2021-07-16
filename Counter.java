@@ -56,7 +56,7 @@ public class Counter
             this.rounds = rounds;
             this.local_c = new Byte[NUM_BYTES];
             this.local_c_decoy = new Byte[NUM_BYTES];
-            this.version = 0;
+            // this.version = 0;
 
             for (int i = 0; i < NUM_BYTES; i++){
                 this.local_c[i] = 0x0;
