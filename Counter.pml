@@ -13,11 +13,11 @@ int reader_id = 0;  // not part of the algorithm
 
 active proctype writer() {
   printf("i am writer %d\n", _pid);
-  int index = B-1;
-  int carry = 0;
   do
   :: true -> // just loop infinitely
-      if 
+      int index = B-1;
+      int carry = 0;
+dow:      if 
       :: c[index] == 255 -> 
           index--;
           c[index] = 0;
@@ -32,12 +32,19 @@ active proctype writer() {
           c[index]++;
           printf("Incremented: %d\n", c[index])
       fi;
+
+      if 
+       :: carry == 1 && index >= 0 -> 
+          goto dow;
+       :: else -> skip;
+      fi;
      
-     int i = 0;
      do
-     :: carry == 1 && i < R -> 
-        isEdited[i] = 1;
-        i++;
+     :: carry == 1 && index >= 0 -> 
+        int i = 0;
+        for(i : 0 .. B-1) {
+          isEdited[i] = 1;
+        }
      :: else -> break;
      od 
   od
