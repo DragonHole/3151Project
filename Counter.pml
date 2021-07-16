@@ -68,7 +68,6 @@ active [R] proctype reader() {
      :: isEdited[my_id] == 1 ->   // repeat until a complete value of counter is obtained
   sr:   isEdited[my_id] = 0;      // sr: short for "start read"
         atomic {                  // make sure the v here  
-          // isEdited[my_id] = 0;
           int i = 0;
           for(i : 0 .. B-1) {
               helper[i] = c[i];
