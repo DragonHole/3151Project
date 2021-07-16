@@ -46,7 +46,7 @@ public class Counter
     
     public static class Reader extends Thread {
         // member vars
-        private int id;
+        private int id; // unique ID for each reader
         private int rounds;
         private Byte[] local_c;
         private Byte[] local_c_decoy;  // inspired by latest rick and morty season 5 episode 2 "decoy family"
@@ -85,10 +85,8 @@ public class Counter
                     }
                 }
 
-                // for us to see
+                // if no update or update has finished, can safely read from the local copy 
                 System.out.println("Reader " + this.id + ": " + byteToLong(this.local_c, NUM_BYTES));
-
-                // try { Thread.sleep(ThreadLocalRandom.current().nextInt(10, 100)); } catch(InterruptedException e) {}
                 r++;
             }
         }
@@ -110,15 +108,19 @@ public class Counter
                 boolean carry = false;
 
                 do{ 
-
-                    if((c[index].byteValue() & 0xff) == 0xff){ // ignore 2's complement
+                    // notify the readers
+                    for(int i = 0; i < NUM_READERS; i++){
+                        isEdited[i] = true;
+                    }
+                    
+                    if((c[index].byteValue() & 0xff) == 0xff){ // if byte is full, carry on to next byte
                         c[index] = 0x0;
                         index--;
                         carry = true; 
                     }
                     else{
-                        if(carry){
-                            System.out.println("carried 1");
+                        if(carry){ // carried over
+                            // System.out.println("carried 1");
                             carry = false;
                         }
                         c[index]++;
@@ -126,19 +128,12 @@ public class Counter
                     }
                 } while (carry && (index >= 0));
 
-                // notify
-                for(int i = 0; i < NUM_READERS; i++){
-                    isEdited[i] = true;
-                }
-
                 r++;
-
-                // resort to this for now
-                // try { Thread.sleep(ThreadLocalRandom.current().nextInt(10, 100)); } catch(InterruptedException e) {}
             }
         }
     }
-
+    
+    // assembles the counter bytes into a printable integer, for println. 
     public static long byteToLong(Byte[] bytes, int length) {
         long val = 0;
         if(length>8) throw new RuntimeException("64 bit overflow");
