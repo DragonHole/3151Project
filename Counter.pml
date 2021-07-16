@@ -65,7 +65,7 @@ active [R] proctype reader() {
   :: true ->
      do
      :: isEdited[my_id] == 1 ->   // repeat until a complete value of counter is obtained
-war:    isEdited[my_id] = 0;      
+  sr:   isEdited[my_id] = 0;      // sr: short for "start read"
         atomic {                  // make sure the v here  
           isEdited[my_id] = 0;
           int i = 0;
@@ -83,7 +83,7 @@ war:    isEdited[my_id] = 0;
             for(i : 0 .. B-1) {
                local_copy[i] = local_copy_decoy[i];
             }
-csr:        printf("Reader %d updated\n", my_id);
+rc:        printf("Reader %d updated\n", my_id); // short for "read complete"
         :: else ->
             printf("Number %d decoy is attacked!!\n", my_id);
         fi 
