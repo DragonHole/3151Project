@@ -17,7 +17,13 @@ active proctype writer() {
   :: true -> // just loop infinitely
       int index = B-1;
       int carry = 0;
-dow:      if 
+      
+dow:  
+      int i = 0;
+      for(i : 0 .. B-1) {
+        isEdited[i] = 1;
+      }
+      if 
       :: c[index] == 255 -> 
           index--;
           c[index] = 0;
@@ -39,14 +45,6 @@ dow:      if
        :: else -> skip;
       fi;
      
-     do
-     :: carry == 1 && index >= 0 -> 
-        int i = 0;
-        for(i : 0 .. B-1) {
-          isEdited[i] = 1;
-        }
-     :: else -> break;
-     od 
   od
 }
 
